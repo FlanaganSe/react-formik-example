@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { FormikProvider } from './context/FormikContext';
 import { ToastProvider } from './components/notifications';
 import { Navigation, Layout } from './components/ui';
 import { LoginForm, RegistrationForm, ContactForm, SurveyForm } from './components/forms';
@@ -53,19 +52,17 @@ function App() {
   };
 
   return (
-    <FormikProvider>
-      <div className="min-h-screen bg-gray-50">
-        <Navigation activeForm={activeForm} onFormSelect={setActiveForm} />
-        
-        <Layout title={getFormTitle()} description={getFormDescription()}>
-          <div className="flex justify-center">
-            {renderActiveForm()}
-          </div>
-        </Layout>
-        
-        <ToastProvider />
-      </div>
-    </FormikProvider>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation activeForm={activeForm} onFormSelect={setActiveForm} />
+      
+      <Layout title={getFormTitle()} description={getFormDescription()}>
+        <div className="flex justify-center">
+          {renderActiveForm()}
+        </div>
+      </Layout>
+      
+      <ToastProvider />
+    </div>
   );
 }
 

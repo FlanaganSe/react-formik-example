@@ -3,7 +3,7 @@ import { Formik, Form, FieldArray } from 'formik';
 import { FormField, TextAreaField, SelectField, FormButton } from '../ui';
 import { surveySchema } from '../../schemas/validationSchemas';
 import { apiService } from '../../services/apiService';
-import { showToast } from '../notifications';
+import { useFormSubmission } from '../../hooks/useFormSubmission';
 import type { SurveyForm as SurveyFormData } from '../../types';
 
 const SurveyForm: React.FC = () => {
@@ -31,26 +31,7 @@ const SurveyForm: React.FC = () => {
     'MongoDB', 'PostgreSQL', 'MySQL', 'Redis'
   ];
 
-  const handleSubmit = async (values: SurveyFormData, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }) => {
-    try {
-      const toastId = showToast.loading('Submitting survey...');
-      
-      const response = await apiService.submitSurvey(values);
-      
-      showToast.dismiss(toastId);
-      
-      if (response.success) {
-        showToast.formSuccess('Survey', response.message);
-        resetForm();
-      } else {
-        showToast.formError('Survey', response.message);
-      }
-    } catch {
-      showToast.networkError();
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleSubmit = useFormSubmission(apiService.submitSurvey, 'Survey');
 
 
   return (

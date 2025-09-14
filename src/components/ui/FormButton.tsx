@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useFormikContext } from 'formik';
 
 interface FormButtonProps {
@@ -25,7 +25,10 @@ const FormButton: React.FC<FormButtonProps> = ({
   
   // If loading is not explicitly provided, use formik's isSubmitting state
   const isLoading = loading !== undefined ? loading : (type === 'submit' && formik.isSubmitting);
-  const isDisabled = disabled || isLoading || (type === 'submit' && !formik.isValid && formik.submitCount > 0);
+  
+  const isDisabled = useMemo(() => {
+    return disabled || isLoading || (type === 'submit' && !formik.isValid && formik.submitCount > 0);
+  }, [disabled, isLoading, type, formik.isValid, formik.submitCount]);
   
   const getButtonClasses = () => {
     let baseClasses = 'inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200';

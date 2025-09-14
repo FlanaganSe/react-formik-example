@@ -15,7 +15,7 @@ export const showToast = {
     }: {
       loading: string;
       success: string | ((data: T) => string);
-      error: string | ((error: any) => string);
+      error: string | ((error: unknown) => string);
     }
   ) => toast.promise(promise, { loading, success, error }),
   

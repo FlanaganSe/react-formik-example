@@ -1,40 +1,41 @@
 import * as Yup from 'yup';
-import { isStrongPassword } from '../utils';
+import { VALIDATION_MESSAGES, FIELD_LIMITS } from '../constants/validation';
 
-// Custom validation methods
-Yup.addMethod(Yup.string, 'strongPassword', function (message = 'Password is not strong enough') {
+// Custom validation methods  
+Yup.addMethod(Yup.string, 'strongPassword', function (message = VALIDATION_MESSAGES.PASSWORD_STRONG) {
   return this.test('strongPassword', message, function (value) {
     if (!value) return true; // Let required handle empty values
-    return isStrongPassword(value);
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return strongPasswordRegex.test(value);
   });
 });
 
 // Common field validations
 export const commonValidations = {
   email: Yup.string()
-    .email('Please enter a valid email address')
-    .required('Email is required'),
+    .email(VALIDATION_MESSAGES.EMAIL_INVALID)
+    .required(VALIDATION_MESSAGES.REQUIRED('Email')),
     
   password: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
-    .required('Password is required'),
+    .min(FIELD_LIMITS.PASSWORD_MIN, VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH)
+    .required(VALIDATION_MESSAGES.REQUIRED('Password')),
     
   strongPassword: Yup.string()
-    .min(8, 'Password must be at least 8 characters')
+    .min(FIELD_LIMITS.PASSWORD_MIN, VALIDATION_MESSAGES.PASSWORD_MIN_LENGTH)
     .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
     .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .matches(/\d/, 'Password must contain at least one number')
     .matches(/[@$!%*?&]/, 'Password must contain at least one special character')
-    .required('Password is required'),
+    .required(VALIDATION_MESSAGES.REQUIRED('Password')),
     
   phone: Yup.string()
-    .matches(/^\(\d{3}\) \d{3}-\d{4}$/, 'Phone must be in format (123) 456-7890')
-    .required('Phone number is required'),
+    .matches(/^\(\d{3}\) \d{3}-\d{4}$/, VALIDATION_MESSAGES.PHONE_FORMAT)
+    .required(VALIDATION_MESSAGES.REQUIRED('Phone number')),
     
   name: Yup.string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(50, 'Name must be less than 50 characters')
-    .required('Name is required'),
+    .min(FIELD_LIMITS.NAME_MIN, VALIDATION_MESSAGES.MIN_LENGTH('Name', FIELD_LIMITS.NAME_MIN))
+    .max(FIELD_LIMITS.NAME_MAX, VALIDATION_MESSAGES.MAX_LENGTH('Name', FIELD_LIMITS.NAME_MAX))
+    .required(VALIDATION_MESSAGES.REQUIRED('Name')),
 };
 
 // Login form schema
@@ -101,46 +102,6 @@ export const surveySchema = Yup.object({
     .required('Rating is required'),
 });
 
-// Validation warnings (non-blocking)
-export const getValidationWarnings = (values: any, formType: string): Record<string, string> => {
-  const warnings: Record<string, string> = {};
-  
-  switch (formType) {
-    case 'registration':
-      if (values.password && values.password.length >= 8) {
-        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(values.password)) {
-          warnings.password = 'Consider using uppercase, lowercase, numbers, and special characters for better security';
-        }
-      }
-      if (values.email && !values.email.includes('.com') && !values.email.includes('.org')) {
-        warnings.email = 'Consider using a common email domain for better deliverability';
-      }
-      break;
-      
-    case 'contact':
-      if (values.phone && !values.phone) {
-        warnings.phone = 'Providing a phone number helps us respond faster';
-      }
-      if (values.subject && values.subject.length < 10) {
-        warnings.subject = 'A more descriptive subject helps us categorize your request';
-      }
-      break;
-      
-    case 'survey':
-      if (values.age && (values.age < 18 || values.age > 65)) {
-        warnings.age = 'This survey is primarily designed for working professionals aged 18-65';
-      }
-      if (values.experience === 'beginner' && values.technologies && values.technologies.length > 5) {
-        warnings.technologies = 'As a beginner, you might want to focus on fewer technologies initially';
-      }
-      if (values.rating && values.rating < 3) {
-        warnings.rating = 'We\'d love to know how we can improve - please share specific feedback';
-      }
-      break;
-  }
-  
-  return warnings;
-};
 
 // Async validation function (simulates server-side validation)
 export const asyncValidateEmail = async (email: string): Promise<string | undefined> => {

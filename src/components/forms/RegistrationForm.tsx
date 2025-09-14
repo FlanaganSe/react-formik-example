@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Formik, Form } from 'formik';
 import { FormField, CheckboxField, FormButton } from '../ui';
 import { registrationSchema } from '../../schemas/validationSchemas';
 import { apiService } from '../../services/apiService';
-import { showToast } from '../notifications';
+import { useFormSubmission } from '../../hooks/useFormSubmission';
 import { formatPhone } from '../../utils';
 import type { RegistrationForm as RegistrationFormData } from '../../types';
 
 const RegistrationForm: React.FC = () => {
-
   const initialValues: RegistrationFormData = {
     firstName: '',
     lastName: '',
@@ -20,34 +19,14 @@ const RegistrationForm: React.FC = () => {
     newsletter: false,
   };
 
-  const handleSubmit = async (values: RegistrationFormData, { setSubmitting, setFieldError, resetForm }: { setSubmitting: (isSubmitting: boolean) => void; setFieldError: (field: string, message: string) => void; resetForm: () => void }) => {
-    try {
-      const toastId = showToast.loading('Creating your account...');
-      
-      const response = await apiService.register(values);
-      
-      showToast.dismiss(toastId);
-      
-      if (response.success) {
-        showToast.formSuccess('Registration', response.message);
-        resetForm();
-      } else {
-        showToast.formError('Registration', response.message);
-        
-        if (response.errors) {
-          response.errors.forEach(error => {
-            if (error.type === 'error') {
-              setFieldError(error.field, error.message);
-            }
-          });
-        }
-      }
-    } catch {
-      showToast.networkError();
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleSubmit = useFormSubmission(apiService.register, 'Registration');
+
+  const createPhoneChangeHandler = useCallback((setFieldValue: (field: string, value: string) => void) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const formatted = formatPhone(e.target.value);
+      setFieldValue('phone', formatted);
+    };
+  }, []);
 
 
   return (
@@ -61,7 +40,10 @@ const RegistrationForm: React.FC = () => {
         validateOnChange={true}
         validateOnBlur={true}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue }) => {
+          const handlePhoneChange = createPhoneChangeHandler(setFieldValue);
+
+          return (
             <Form className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <FormField
@@ -102,10 +84,7 @@ const RegistrationForm: React.FC = () => {
                 name="phone"
                 label="Phone Number"
                 placeholder="(123) 456-7890"
-                onChange={(e) => {
-                  const formatted = formatPhone(e.target.value);
-                  setFieldValue('phone', formatted);
-                }}
+                onChange={handlePhoneChange}
               />
               
               <div className="space-y-3 pt-2">
@@ -133,7 +112,8 @@ const RegistrationForm: React.FC = () => {
                 </button>
               </div>
             </Form>
-        )}
+          );
+        }}
       </Formik>
     </div>
   );

@@ -21,21 +21,23 @@ export interface ValidationWarning {
 
 export type ValidationMessage = ValidationError | ValidationWarning;
 
-export interface FormState {
+export interface FormState<T = FormValues> {
   isSubmitting: boolean;
   submitAttempted: boolean;
-  errors: Record<string, string>;
-  warnings: Record<string, string>;
-  touched: Record<string, boolean>;
-  values: Record<string, any>;
+  errors: Partial<Record<keyof T, string>>;
+  warnings: Partial<Record<keyof T, string>>;
+  touched: Partial<Record<keyof T, boolean>>;
+  values: T;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
   errors?: ValidationMessage[];
 }
+
+export type FormValues = ContactForm | RegistrationForm | LoginForm | SurveyForm;
 
 export interface User {
   id: string;

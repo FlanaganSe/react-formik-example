@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik';
 import { FormField, CheckboxField, FormButton } from '../ui';
 import { loginSchema } from '../../schemas/validationSchemas';
 import { apiService } from '../../services/apiService';
-import { showToast } from '../notifications';
+import { useFormSubmission } from '../../hooks/useFormSubmission';
 import type { LoginForm as LoginFormData } from '../../types';
 
 const LoginForm: React.FC = () => {
@@ -13,34 +13,7 @@ const LoginForm: React.FC = () => {
     rememberMe: false,
   };
 
-  const handleSubmit = async (values: LoginFormData, { setSubmitting, setFieldError }: { setSubmitting: (isSubmitting: boolean) => void; setFieldError: (field: string, message: string) => void }) => {
-    try {
-      const toastId = showToast.loading('Signing you in...');
-      
-      const response = await apiService.login(values);
-      
-      showToast.dismiss(toastId);
-      
-      if (response.success) {
-        showToast.formSuccess('Login', `Welcome back, ${response.data?.name}!`);
-        // In a real app, you would redirect or update auth state here
-      } else {
-        showToast.formError('Login', response.message);
-        
-        if (response.errors) {
-          response.errors.forEach(error => {
-            if (error.type === 'error') {
-              setFieldError(error.field, error.message);
-            }
-          });
-        }
-      }
-    } catch {
-      showToast.networkError();
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleSubmit = useFormSubmission(apiService.login, 'Login');
 
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">

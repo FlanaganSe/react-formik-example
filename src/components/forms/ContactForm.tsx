@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Formik, Form } from 'formik';
 import { FormField, TextAreaField, FormButton } from '../ui';
 import { contactSchema } from '../../schemas/validationSchemas';
 import { apiService } from '../../services/apiService';
-import { showToast } from '../notifications';
+import { useFormSubmission } from '../../hooks/useFormSubmission';
 import { formatPhone } from '../../utils';
 import type { ContactForm as ContactFormData } from '../../types';
 
 const ContactForm: React.FC = () => {
-
   const initialValues: ContactFormData = {
     name: '',
     email: '',
@@ -17,26 +16,14 @@ const ContactForm: React.FC = () => {
     message: '',
   };
 
-  const handleSubmit = async (values: ContactFormData, { setSubmitting, resetForm }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void }) => {
-    try {
-      const toastId = showToast.loading('Sending your message...');
-      
-      const response = await apiService.submitContact(values);
-      
-      showToast.dismiss(toastId);
-      
-      if (response.success) {
-        showToast.formSuccess('Contact Form', response.message);
-        resetForm();
-      } else {
-        showToast.formError('Contact Form', response.message);
-      }
-    } catch {
-      showToast.networkError();
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  const handleSubmit = useFormSubmission(apiService.submitContact, 'Contact Form');
+
+  const createPhoneChangeHandler = useCallback((setFieldValue: (field: string, value: string) => void) => {
+    return (e: React.ChangeEvent<HTMLInputElement>) => {
+      const formatted = formatPhone(e.target.value);
+      setFieldValue('phone', formatted);
+    };
+  }, []);
 
 
   return (
@@ -53,7 +40,10 @@ const ContactForm: React.FC = () => {
         validateOnChange={true}
         validateOnBlur={true}
       >
-        {({ setFieldValue }) => (
+        {({ setFieldValue }) => {
+          const handlePhoneChange = createPhoneChangeHandler(setFieldValue);
+
+          return (
             <Form className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -75,10 +65,7 @@ const ContactForm: React.FC = () => {
                   name="phone"
                   label="Phone Number (Optional)"
                   placeholder="(123) 456-7890"
-                  onChange={(e) => {
-                    const formatted = formatPhone(e.target.value);
-                    setFieldValue('phone', formatted);
-                  }}
+                  onChange={handlePhoneChange}
                 />
                 
                 <FormField
@@ -110,7 +97,8 @@ const ContactForm: React.FC = () => {
                 </div>
               </div>
             </Form>
-        )}
+          );
+        }}
       </Formik>
     </div>
   );
