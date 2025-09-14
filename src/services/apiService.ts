@@ -1,4 +1,4 @@
-import { ApiResponse, User, ContactForm, RegistrationForm, LoginForm, SurveyForm } from '../types';
+import type { ApiResponse, User, ContactForm, RegistrationForm, LoginForm, SurveyForm } from '../types';
 import { delay, generateId } from '../utils';
 
 // Simulate network conditions
