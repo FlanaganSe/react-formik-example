@@ -1,69 +1,58 @@
-# React + TypeScript + Vite
+# Formik Test Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application for testing and demonstrating Formik form management with comprehensive validation, error handling, and modern UX patterns.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** with TypeScript
+- **Vite** - Build tool and dev server
+- **Formik 2.4.6** - Form state management
+- **Yup 1.7.0** - Schema validation
+- **Tailwind CSS** - Styling
+- **React Hot Toast** - Notifications
+- **Axios** - HTTP client
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Multiple Form Examples**: Registration, login, contact, and survey forms
+- **Comprehensive Validation**: Field-level and form-level validation with Yup schemas
+- **Error Handling**: Validation errors, warnings, and API error responses
+- **Modern UI**: Clean interface with Tailwind CSS and Headless UI components
+- **Mock API Integration**: Simulated endpoints with realistic delays and error scenarios
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+```bash
+# Install dependencies
+npm install
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run linting
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── components/
+│   ├── forms/          # Formik form implementations
+│   ├── ui/             # Reusable UI components
+│   └── notifications/  # Toast notification system
+├── schemas/            # Yup validation schemas
+├── services/           # Mock API services
+├── types/              # TypeScript definitions
+└── hooks/              # Custom form hooks
+```
+
+## Use Cases
+
+- Testing Formik integration patterns
+- Validating form UX approaches
+- Chrome extension form development
+- Form validation strategy evaluation
