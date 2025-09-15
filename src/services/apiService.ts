@@ -1,4 +1,4 @@
-import type { ApiResponse, User, ContactForm, RegistrationForm, LoginForm, SurveyForm } from '../types';
+import type { ApiResponse, User, ContactForm, RegistrationForm, LoginForm, SurveyForm, ProductFeedbackForm } from '../types';
 import { delay, generateId } from '../utils';
 
 // Simulate network conditions
@@ -160,6 +160,25 @@ class ApiService {
     return {
       success: true,
       message: 'Thank you for your feedback! Your response has been recorded.'
+    };
+  }
+
+  // Product feedback form endpoint
+  async submitProductFeedback(feedbackData: ProductFeedbackForm): Promise<ApiResponse> {
+    await this.simulateNetworkDelay();
+    
+    if (this.shouldSimulateError()) {
+      return {
+        success: false,
+        message: 'Product feedback submission failed. Please try again.',
+      };
+    }
+
+    console.log('Product feedback submitted:', feedbackData);
+    
+    return {
+      success: true,
+      message: 'Thank you for your product feedback! We appreciate your input.'
     };
   }
 

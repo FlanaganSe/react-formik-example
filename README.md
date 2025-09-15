@@ -36,6 +36,24 @@ npm run build
 npm run lint
 ```
 
+## Deployment to GitHub Pages
+
+This project is configured for automated deployment to GitHub Pages.
+
+### Automated Deployment
+
+A GitHub Actions workflow is set up to automatically build and deploy the application whenever changes are pushed to the `main` branch.
+
+### Manual Deployment
+
+To manually deploy the application, run the following command:
+
+```bash
+pnpm run deploy
+```
+
+This will build the project and deploy the `dist` directory to the `gh-pages` branch.
+
 ## Project Structure
 
 ```

@@ -63,7 +63,7 @@ const SurveyForm: React.FC = () => {
 
   const handleSurveySubmit = useFormSubmission(apiService.submitSurvey, 'Survey');
   const handleProductFeedbackSubmit = useFormSubmission(
-    (data: ProductFeedbackForm) => apiService.submitSurvey(data as SurveyFormData),
+    (data: ProductFeedbackForm) => apiService.submitProductFeedback(data),
     'Product Feedback'
   );
 
