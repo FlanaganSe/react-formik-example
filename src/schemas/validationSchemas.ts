@@ -102,6 +102,33 @@ export const surveySchema = Yup.object({
     .required('Rating is required'),
 });
 
+// Product feedback form schema (second form)
+export const productFeedbackSchema = Yup.object({
+  productName: Yup.string()
+    .min(2, 'Product name must be at least 2 characters')
+    .max(50, 'Product name must be less than 50 characters')
+    .required('Product name is required'),
+  category: Yup.string()
+    .oneOf(['software', 'hardware', 'service', 'other'], 'Please select a valid category')
+    .required('Category is required'),
+  usageFrequency: Yup.string()
+    .oneOf(['daily', 'weekly', 'monthly', 'rarely'], 'Please select usage frequency')
+    .required('Usage frequency is required'),
+  satisfaction: Yup.number()
+    .min(1, 'Satisfaction rating must be between 1 and 10')
+    .max(10, 'Satisfaction rating must be between 1 and 10')
+    .required('Satisfaction rating is required'),
+  features: Yup.array()
+    .of(Yup.string())
+    .min(1, 'Please select at least one feature')
+    .required('Features are required'),
+  improvements: Yup.string()
+    .min(10, 'Please provide at least 10 characters for improvements')
+    .max(300, 'Improvements must be less than 300 characters')
+    .required('Improvement suggestions are required'),
+  recommendToFriend: Yup.boolean().required('Please indicate if you would recommend this product'),
+});
+
 
 // Async validation function (simulates server-side validation)
 export const asyncValidateEmail = async (email: string): Promise<string | undefined> => {

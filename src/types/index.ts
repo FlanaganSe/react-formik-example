@@ -82,3 +82,13 @@ export interface SurveyForm {
   feedback: string;
   rating: number;
 }
+
+export interface ProductFeedbackForm {
+  productName: string;
+  category: 'software' | 'hardware' | 'service' | 'other';
+  usageFrequency: 'daily' | 'weekly' | 'monthly' | 'rarely';
+  satisfaction: number;
+  features: string[];
+  improvements: string;
+  recommendToFriend: boolean;
+}
